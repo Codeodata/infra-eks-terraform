@@ -21,7 +21,7 @@ Este proyecto implementa una infraestructura completa utilizando Terraform para 
     - `main.tf` — Configuración del módulo EKS
     - `variables.tf` — Variables del módulo EKS
     - `outputs.tf` — Outputs del módulo EKS
-    - **aws-auth/**
+  - **aws-auth/**
       - `main.tf` — Lógica para crear/actualizar el ConfigMap aws-auth
       - `variables.tf` — Variables para definir usuarios y roles IAM
       - `outputs.tf` — Outputs relacionados al aws-auth (opcional)

@@ -7,36 +7,36 @@ Aquí se encuentra todo el código, la configuración de infraestructura y la do
 Este proyecto implementa una infraestructura completa utilizando Terraform para desplegar un clúster EKS (Elastic Kubernetes Service) en AWS, junto con aplicaciones y herramientas de monitoreo.
 
 Estructura del Proyecto    
-.
-├── environments/
-│   └── dev/
-│       ├── main.tf          # Configuración principal para el entorno de desarrollo
-│       ├── variables.tf     # Definición de variables para desarrollo
-│       ├── terraform.tfvars # Valores específicos de variables para desarrollo
-│       ├── providers.tf     # Configuración de proveedores para desarrollo
-│       └── outputs.tf       # Outputs del entorno de desarrollo
-├── modules/
-│   ├── eks/
-│   │   ├── main.tf          # Configuración del módulo EKS
-│   │   ├── variables.tf     # Variables del módulo EKS
-│   │   ├── outputs.tf       # Outputs del módulo EKS
-│   │   └── aws-auth/        # Módulo para configurar el ConfigMap aws-auth en el clúster
-│   │         ├── main.tf     # Lógica para crear/actualizar el ConfigMap aws-auth
-│   │         ├── variables.tf# Variables para definir usuarios y roles IAM
-│   │         └── outputs.tf  # Outputs relacionados al aws-auth (opcional)
-│   ├── vpc/
-│   │   ├── main.tf          # Configuración del módulo VPC
-│   │   ├── variables.tf     # Variables del módulo VPC
-│   │   └── outputs.tf       # Outputs del módulo VPC
-│   ├── nginx-app/
-│   │   ├── main.tf          # Configuración de despliegue de Nginx
-│   │   ├── variables.tf     # Variables para Nginx
-│   │   └── outputs.tf       # Outputs del módulo Nginx
-│   └── monitoring/
-│       ├── main.tf          # Configuración de Prometheus y Grafana
-│       ├── variables.tf     # Variables para el monitoreo
-│       └── outputs.tf       # Outputs del módulo de monitoreo
-└── README.md                # Este archivo
+
+   ├── environments/
+   │   └── dev/
+   │       ├── main.tf          # Configuración principal para el entorno de desarrollo
+   │       ├── variables.tf     # Definición de variables para desarrollo
+   │       ├── terraform.tfvars # Valores específicos de variables para desarrollo
+   │       ├── providers.tf     # Configuración de proveedores para desarrollo
+   │       └── outputs.tf       # Outputs del entorno de desarrollo
+   ├── modules/
+   │   ├── eks/
+   │   │   ├── main.tf          # Configuración del módulo EKS
+   │   │   ├── variables.tf     # Variables del módulo EKS
+   │   │   ├── outputs.tf       # Outputs del módulo EKS
+   │   │   └── aws-auth/        # Módulo para configurar el ConfigMap aws-auth en el clúster
+   │   │         ├── main.tf     # Lógica para crear/actualizar el ConfigMap aws-auth
+   │   │         ├── variables.tf# Variables para definir usuarios y roles IAM
+   │   │         └── outputs.tf  # Outputs relacionados al aws-auth (opcional)
+   │   ├── vpc/
+   │   │   ├── main.tf          # Configuración del módulo VPC
+   │   │   ├── variables.tf     # Variables del módulo VPC
+   │   │   └── outputs.tf       # Outputs del módulo VPC
+   │   ├── nginx-app/
+   │   │   ├── main.tf          # Configuración de despliegue de Nginx
+   │   │   ├── variables.tf     # Variables para Nginx
+   │   │   └── outputs.tf       # Outputs del módulo Nginx
+   │   └── monitoring/
+   │       ├── main.tf          # Configuración de Prometheus y Grafana
+   │       ├── variables.tf     # Variables para el monitoreo
+   │       └── outputs.tf       # Outputs del módulo de monitoreo
+   └── README.md                # Este archivo
 
 Requisitos Previos
 

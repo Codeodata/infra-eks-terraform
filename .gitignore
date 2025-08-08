@@ -1,0 +1,5 @@
+# Ignorar todos los archivos y carpetas relacionadas con Terraform
+**/.terraform/*
+.terraform.lock.hcl
+# Ignorar los archivos de estado de Terraform, para que otros puedan probarlo
+terraform.**

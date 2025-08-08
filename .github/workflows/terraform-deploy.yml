@@ -1,0 +1,114 @@
+name: Terraform Deploy Infrastructure
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'environments/**'
+      - 'modules/**'
+      - '.github/workflows/terraform-deploy.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'environments/**'
+      - 'modules/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy (dev, stage, prod)'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - stage
+          - prod
+
+env:
+  AWS_REGION: us-east-1  # Cambia a tu región preferida
+  TERRAFORM_VERSION: 1.11.4
+
+jobs:
+  terraform-validate:
+    name: Terraform Validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+        
+      - name: Terraform Init
+        working-directory: environments/${{ github.event.inputs.environment || 'dev' }}
+        run: terraform init -backend=false
+        
+      - name: Terraform Validate
+        working-directory: environments/${{ github.event.inputs.environment || 'dev' }}
+        run: terraform validate
+
+
+  terraform-apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    # Este job solo se ejecuta en main o cuando se dispara manualmente
+    environment: ${{ github.event.inputs.environment || 'dev' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          
+      - name: Terraform Init
+        working-directory: environments/${{ github.event.inputs.environment || 'dev' }}
+        run: terraform init
+        
+      # Despliegue secuencial siguiendo el orden definido en la documentación
+      - name: Deploy VPC
+        working-directory: environments/${{ github.event.inputs.environment || 'dev' }}
+        run: terraform apply -target=module.vpc -auto-approve
+        
+      - name: Deploy EKS Cluster
+        working-directory: environments/${{ github.event.inputs.environment || 'dev' }}
+        run: terraform apply -target=module.eks -auto-approve
+        
+      - name: Configure Cluster Access
+        working-directory: environments/${{ github.event.inputs.environment || 'dev' }}
+        run: terraform apply -target=module.eks_aws_auth -auto-approve
+        
+      - name: Deploy Monitoring and wait for CRDs
+        working-directory: environments/${{ github.event.inputs.environment || 'dev' }}
+        run: terraform apply -target=module.monitoring.helm_release.kube_prometheus_stack -target=module.monitoring.null_resource.wait_for_crds -auto-approve
+        
+      - name: Deploy remaining resources
+        working-directory: environments/${{ github.event.inputs.environment || 'dev' }}
+        run: terraform apply -auto-approve
+        
+      - name: Verify Deployment
+        working-directory: environments/${{ github.event.inputs.environment || 'dev' }}
+        run: |
+          terraform output -json > tf_output.json
+          echo "Deployment complete. Cluster endpoint: $(jq -r '.eks_cluster_endpoint.value' tf_output.json)"
+        
+      - name: Upload Outputs Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-outputs-${{ github.event.inputs.environment || 'dev' }}
+          path: environments/${{ github.event.inputs.environment || 'dev' }}/tf_output.json
+          retention-days: 5

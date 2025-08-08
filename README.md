@@ -6,6 +6,8 @@ Aquí se encuentra todo el código, la configuración de infraestructura y la do
 ## 📌 Descripción
 Este proyecto implementa una infraestructura completa utilizando Terraform para desplegar un clúster EKS (Elastic Kubernetes Service) en AWS, junto con aplicaciones y herramientas de monitoreo.
 
+![Diagrama de arquitectura](diagrams/arquitectura.png)
+
 ## Estructura del Proyecto
 
 - **environments/**

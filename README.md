@@ -26,17 +26,17 @@ Este proyecto implementa una infraestructura completa utilizando Terraform para 
       - `variables.tf` — Variables para definir usuarios y roles IAM
       - `outputs.tf` — Outputs relacionados al aws-auth (opcional)
 
-  - **vpc/**
+- **vpc/**
     - `main.tf` — Configuración del módulo VPC
     - `variables.tf` — Variables del módulo VPC
     - `outputs.tf` — Outputs del módulo VPC
 
-  - **nginx-app/**
+- **nginx-app/**
     - `main.tf` — Configuración de despliegue de Nginx
     - `variables.tf` — Variables para Nginx
     - `outputs.tf` — Outputs del módulo Nginx
 
-  - **monitoring/**
+- **monitoring/**
     - `main.tf` — Configuración de Prometheus y Grafana
     - `variables.tf` — Variables para el monitoreo
     - `outputs.tf` — Outputs del módulo de monitoreo
